@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+
+const Project = require('../src/project')
+
+program
+  .option('--name', '项目名称')
+  .option('--description', '项目介绍')
+  .option('--typescript', '是否使用 TypeScript')
+  .option('--template', '项目模板')
+  .parse(process.argv)
+
+const args = program.args
+const { template, description, name, typescript } = program
+
+const projectName = args[0] || name
+
+const project = new Project({
+  projectName,
+  template,
+  description,
+  typescript
+})
+
+project.create()

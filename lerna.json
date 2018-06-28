@@ -1,0 +1,40 @@
+{
+  "lerna": "2.10.0",
+  "packages": [
+    "packages/taro",
+    "packages/taro-async-await",
+    "packages/taro-cli",
+    "packages/taro-components",
+    "packages/taro-components-rn",
+    "packages/taro-h5",
+    "packages/taro-plugin-babel",
+    "packages/taro-plugin-csso",
+    "packages/taro-plugin-sass",
+    "packages/taro-plugin-uglifyjs",
+    "packages/taro-plugin-typescript",
+    "packages/taro-plugin-less",
+    "packages/taro-plugin-stylus",
+    "packages/taro-redux",
+    "packages/taro-redux-h5",
+    "packages/taro-rn",
+    "packages/taro-rn-runner",
+    "packages/taro-router",
+    "packages/taro-weapp",
+    "packages/taro-webpack-runner",
+    "packages/postcss-plugin-constparse",
+    "packages/eslint-config-taro",
+    "packages/eslint-plugin-taro",
+    "packages/taro-transformer-wx",
+    "packages/postcss-pxtransform"
+  ],
+  "command": {
+    "publish": {
+      "message": "chore(release): publish %s"
+    }
+  },
+  "version": "0.0.59",
+  "npmClient": "yarn",
+  "npmClientArgs": [
+    "--no-lockfile"
+  ]
+}

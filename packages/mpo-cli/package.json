@@ -1,0 +1,55 @@
+{
+  "name": "@tarojs/cli",
+  "version": "0.0.59",
+  "description": "cli tool for taro",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/taro.git"
+  },
+  "bin": {
+    "taro": "bin/taro"
+  },
+  "keywords": [
+    "taro",
+    "weapp"
+  ],
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "author": "O2Team",
+  "license": "MIT",
+  "dependencies": {
+    "@tarojs/transformer-wx": "0.0.59",
+    "autoprefixer": "^8.4.1",
+    "babel-core": "^6.26.3",
+    "babel-generator": "^6.26.1",
+    "babel-template": "^6.26.0",
+    "babel-traverse": "^6.26.0",
+    "babel-types": "^6.26.0",
+    "babylon": "^6.18.0",
+    "chalk": "^2.3.2",
+    "chokidar": "^2.0.3",
+    "commander": "^2.15.0",
+    "cross-spawn": "^6.0.5",
+    "css-to-react-native-transform": "^1.4.0",
+    "fs-extra": "^5.0.0",
+    "glob": "^7.1.2",
+    "inquirer": "^5.2.0",
+    "latest-version": "^4.0.0",
+    "lodash": "^4.17.5",
+    "mem-fs": "^1.1.3",
+    "mem-fs-editor": "^4.0.0",
+    "ora": "^2.0.0",
+    "postcss": "^6.0.22",
+    "postcss-pxtransform": "0.0.59",
+    "resolve": "^1.6.0",
+    "shelljs": "^0.8.1",
+    "through2": "^2.0.3",
+    "vinyl": "^2.1.0",
+    "vinyl-fs": "^3.0.2"
+  }
+}
