@@ -37,7 +37,7 @@ const UPDATE_PACKAGE_LIST = [
   'postcss-plugin-constparse',
   'eslint-config-taro',
   'eslint-plugin-taro',
-  'taro-transformer-wx',
+  'mpo-sp-transformer-wx',
   'postcss-pxtransform'
 ]
 
