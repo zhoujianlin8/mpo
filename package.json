@@ -1,7 +1,7 @@
 {
-  "name": "taro",
+  "name": "mpo",
   "private": true,
-  "description": "Nerv-multi多端开发解决方案",
+  "description": "mpo多端开发解决方案",
   "main": "index.js",
   "scripts": {
     "lint": "eslint packages/*/src --fix",
@@ -30,14 +30,14 @@
   },
   "keywords": [
     "nerv",
-    "taro"
+    "mpo"
   ],
-  "author": "O2Team",
+  "author": "zhoujianlin8@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/NervJS/taro/issues"
+    "url": "https://github.com/zhoujianlin8/mpo/issues"
   },
-  "homepage": "https://github.com/NervJS/taro#readme",
+  "homepage": "https://github.com/zhoujianlin8/mpo#readme",
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.42",
     "@babel/plugin-proposal-class-properties": "^7.0.0-beta.42",
