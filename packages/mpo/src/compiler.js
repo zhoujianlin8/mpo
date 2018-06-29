@@ -7,6 +7,7 @@ class Compiler extends Message {
     super();
     this.modules = {}; // {path {content, imports, isRoot: true}}
     this.options = GetOptions(options);
+
     // 加载插件
     this._initPlugins(Util.fixOptions(options.plugins,'plugin'));
     this._init(cb);

@@ -1,9 +1,10 @@
-const { transform } = require('babel-core')
-module.exports = function babel (item,config) {
+const { transform } = require('babel-core');
+const LoaderMain = require('./mpo-loader-main');
+module.exports = function babelLoader (item,config) {
   let p
   try {
-    const res = transform(item.content, config)
-    p = Promise.resolve(res)
+    item.content = transform(item.content, config);
+    p = Promise.resolve(LoaderMain(item))
   } catch (e) {
     p = Promise.reject(e)
   }
