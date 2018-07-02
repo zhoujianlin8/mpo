@@ -2,7 +2,10 @@
  * Created by zhou
  */
 class Message {
-  _listeners = {};//{'a':[fn, fn,fn],'b':[fn,fn]}
+  constructor(){
+    this._listeners = {}
+  }
+  //_listeners = {};//{'a':[fn, fn,fn],'b':[fn,fn]}
   on (name, fn) {
     const listenerItem = this._listeners[name] || [];
     fn = fn || function () {
@@ -41,4 +44,4 @@ class Message {
     return this;
   }
 }
-export default Message
+module.exports = Message

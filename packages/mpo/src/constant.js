@@ -8,6 +8,6 @@ module.exports.loaders = {
 }
 
 module.exports.plugins = {
-  'fileOutputPlugin': require('../plugins/mpo-loader-css'),
+  'fileOutputPlugin': require('../plugins/fileOutputPlugin'),
 
 }

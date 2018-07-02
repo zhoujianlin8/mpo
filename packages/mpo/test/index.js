@@ -1,4 +1,4 @@
-const mpo = require('./index');
+const mpo = require('../index');
 const path = require('path');
 mpo({
   entry: {
@@ -21,14 +21,14 @@ mpo({
 
   platform: ['web','wx'],
   isServer: true,
-  resolveLoaderModule: [path.join(__dirname, "../node_modules"), path.join(cwdPath, "node_modules")],
+  resolveLoaderModule: [],
   loaders: [
     {
       test: /\.js(x)?/g,
       use: 'babel-loader',
     },
     {
-      test: /\.css?/g,
+      test: /\.css/g,
       use: 'css-loader',
     }
   ],

@@ -1,5 +1,6 @@
 const resolve = require('resolve');
 const constant = require('./constant');
+const cwd = process.cwd();
 function Noop (){}
 function getStrToArr(str,resloveModule = []){
   str = str.trim();
@@ -9,7 +10,7 @@ function getStrToArr(str,resloveModule = []){
   if(module){
     fn = constant.loaders[module] || constant.plugins[module];
     if(!fn){
-      const file = resolve.sync(module,{paths: resloveModule, basedir:  process.cwd(),isDirectory: false})
+      const file = resolve.sync(module,{paths: resloveModule, basedir:  cwd,isDirectory: false})
       if(file){
         fn = require(file);
       }else {
@@ -30,8 +31,10 @@ function getStrToArr(str,resloveModule = []){
   return [fn || Noop,options];
 }
 
+
+
 //格式化参数 []
-modules.exports.fixOptions = function (arr = [],key,resloveModule) {
+module.exports.fixOptions = function (arr = [],key,resloveModule) {
   let newArr = [];
   if(typeof arr === 'string'){
     arr = arr.split('!')
@@ -58,7 +61,7 @@ modules.exports.fixOptions = function (arr = [],key,resloveModule) {
   return arr;
 }
 
-modules.exports.queueExec = async function (arr = [],...props) {
+module.exports.queueExec = async function (arr = [],...props) {
   if (arr.length) {
     async function exec() {
       if(!arr.length) return
@@ -70,9 +73,19 @@ modules.exports.queueExec = async function (arr = [],...props) {
   }
 }
 
-
-modules.exports.getEntryPaths = function (entry,extensions) {
-  
+module.exports.getEntryPaths = async function (entry) {
+  let arr = [];
+  Object.keys(entry).forEach((item)=>{
+    const paths = entry[item].paths || [];
+    paths.forEach((it)=>{
+      if(it && arr.indexOf(it) !== -1){
+        arr.push(it)
+      }
+    })
+  });
+  return arr;
 }
+
+
 
 

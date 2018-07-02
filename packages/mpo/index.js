@@ -44,7 +44,7 @@ const mpo = (options = {},cb) => {
   return new Compiler(options,cb)
 };
 
-let exports = module.exports = mpo;
+exports = module.exports = mpo;
 exports.version = version;
 exports.Compiler = Compiler;
 const exportPlugins = (obj, mappings) => {

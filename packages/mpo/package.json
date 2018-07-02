@@ -23,6 +23,8 @@
   "author": "zhoujianlin8@gamil.com",
   "license": "MIT",
   "dependencies": {
+    "babel-core": "^6.26.3",
+    "less": "^3.0.4",
     "resolve": "^1.8.1"
   }
 }

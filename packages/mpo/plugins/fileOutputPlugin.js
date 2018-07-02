@@ -3,4 +3,4 @@ function fileOutPutPlugin (compiler,options,config) {
     // compiler.compiler(file)
   });
 }
-modules.exports = fileOutPutPlugin;
+module.exports = fileOutPutPlugin;

@@ -1,6 +1,6 @@
-const Message = require('message');
+const Message = require('./message');
 const Util = require('./util');
-const getOptions = require('./src/getOptions');
+const getOptions = require('./getOptions');
 const fs = require('fs');
 class Compiler extends Message {
   constructor(options = {}, cb) {
@@ -22,8 +22,7 @@ class Compiler extends Message {
     })
   }
   async _init(cb) {
-    this.entryFiles = Util.getEntryPaths(this.options.entry,this.options.extensions || []);
-
+    this.entryFiles = Util.getEntryPaths(this.options.entry);
     await this.fire('compiler-before', this);
     await this._compiler();
     await this.fire('compiler-after', this);
@@ -32,9 +31,9 @@ class Compiler extends Message {
     cb && cb(this);
   }
   async _compiler() {
-    if (this.enterFiles && this.enterFiles.length) {
+    if (this.entryFiles && this.entryFiles.length) {
       let arr = [];
-      this.enterFiles.forEach((item) => {
+      this.entryFiles.forEach((item) => {
         arr.push(this._compilerItem(item))
       })
       return Promise.all(arr)
@@ -42,7 +41,7 @@ class Compiler extends Message {
   }
 
   async _compilerItem(file) {
-    const isRoot = this.enterFiles.indexOf(file) !== -1;
+    const isRoot = this.entryFiles.indexOf(file) !== -1;
     let content = fs.readFileSync(file,'utf-8');
     let moduleObj = {
       isRoot: isRoot,
@@ -94,4 +93,4 @@ class Compiler extends Message {
   }
 }
 
-modules.exports = Compiler
+module.exports = Compiler
