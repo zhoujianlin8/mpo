@@ -1,4 +1,5 @@
 const { transform } = require('babel-core');
-module.exports = function loaderMain (item) {
-
-}
+const getFilePath = require('');
+module.exports = async function loaderMain (item,config) {
+   const Compiler = this;
+};

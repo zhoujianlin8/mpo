@@ -1,17 +1,20 @@
 const resolve = require('resolve');
-
+const constant = require('./constant');
 function Noop (){}
 function getStrToArr(str,resloveModule = []){
   str = str.trim();
   const arr = str.split('?');
-  let options = {},fn = Noop;
+  let options = {},fn;
   const module = arr[0].trim();
   if(module){
-    const file = resolve.sync(module,{paths: resloveModule, basedir:  process.cwd(),isDirectory: false})
-    if(file){
-      fn = require(file) || Noop;
-    }else{
-      console.error(`${module} not found`)
+    fn = constant.loaders[module] || constant.plugins[module];
+    if(!fn){
+      const file = resolve.sync(module,{paths: resloveModule, basedir:  process.cwd(),isDirectory: false})
+      if(file){
+        fn = require(file);
+      }else {
+        console.error(`${module} not found`)
+      }
     }
   }
   if(module && arr[1]){
@@ -24,7 +27,7 @@ function getStrToArr(str,resloveModule = []){
       }
     })
   }
-  return [fn,options];
+  return [fn || Noop,options];
 }
 
 //格式化参数 []
@@ -66,4 +69,10 @@ modules.exports.queueExec = async function (arr = [],...props) {
     await exec();
   }
 }
+
+
+modules.exports.getEntryPaths = function (entry,extensions) {
+  
+}
+
 

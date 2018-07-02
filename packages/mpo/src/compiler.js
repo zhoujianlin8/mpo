@@ -1,15 +1,15 @@
 const Message = require('message');
 const Util = require('./util');
-const GetOptions = require('./src/getOptions');
+const getOptions = require('./src/getOptions');
 const fs = require('fs');
 class Compiler extends Message {
   constructor(options = {}, cb) {
     super();
     this.modules = {}; // {path {content, imports, isRoot: true}}
-    this.options = GetOptions(options);
-
+    const opt = this.options = getOptions(options);
+    if(typeof opt === 'string') return cb({error: true, opt});
     // 加载插件
-    this._initPlugins(Util.fixOptions(options.plugins,'plugin'));
+    this._initPlugins(opt.plugins);
     this._init(cb);
   }
 
@@ -21,8 +21,9 @@ class Compiler extends Message {
       }
     })
   }
-
   async _init(cb) {
+    this.entryFiles = Util.getEntryPaths(this.options.entry,this.options.extensions || []);
+
     await this.fire('compiler-before', this);
     await this._compiler();
     await this.fire('compiler-after', this);
@@ -48,14 +49,13 @@ class Compiler extends Message {
       content: content,
       isContentImports: false,
       imports: [],
+      importsPaths: [],
       file: file
     };
     await this.fire('compiler-item-before', this, moduleObj);
     await this._loaderHand(moduleObj);
     await this.fire('compiler-item-after', this, moduleObj);
-
    // this.modules[file] = moduleObj;
-
     await this.fire('compiler-item-output', this, moduleObj);
     if (!moduleObj.isContentImports && moduleObj.importsPaths && moduleObj.importsPaths.length) {
       let arrDep = []

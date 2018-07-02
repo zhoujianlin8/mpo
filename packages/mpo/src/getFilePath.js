@@ -8,6 +8,7 @@
 * */
 const path = require('path');
 const fs = require('fs');
+const resolve = require('resolve');
 let cacheObj = {};
 // 未找到 null , 忽略 false
 module.exports = function (config) {
