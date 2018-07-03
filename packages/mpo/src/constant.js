@@ -8,6 +8,9 @@ module.exports.loaders = {
 }
 
 module.exports.plugins = {
-  'fileOutputPlugin': require('../plugins/fileOutputPlugin'),
-
+  'outputPlugin': require('../plugins/outputPlugin'),
+  'hotPlugin': require('../plugins/hotPlugin'),
+  'watchPlugin': require('../plugins/watchPlugin'),
+  'serverPlugin': require('../plugins/serverPlugin'),
+  'wrapPlugin': require('../plugins/wrapPlugin'),
 }

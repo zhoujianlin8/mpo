@@ -2,10 +2,10 @@ const mpo = require('../index');
 const path = require('path');
 mpo({
   entry: {
-    app: path.join(__dirname,'../../work/alipaypage/src/app.js'),
+    app: '/Users/bbt/work/alipaypage/src/app.js',
   },
   output: {
-    path: './dist',
+    path:  path.join(__dirname,'./dist'),
     filename: '[name].js',
   },
   //别名或其他路径
@@ -32,7 +32,7 @@ mpo({
       use: 'css-loader',
     }
   ],
-  plugins: [],
+  plugins: ['wrapPlugin','outputPlugin'],
 
   webPConfig: {
 

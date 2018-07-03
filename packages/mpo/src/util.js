@@ -46,7 +46,7 @@ module.exports.fixOptions = function (arr = [],key,resloveModule) {
     let it = {}
     if(type === 'string'){
       const strArr = getStrToArr(item,resloveModule);
-      it[key] = strArr[0] || Noop;
+      it[key] = strArr[0];
       it['options'] = strArr[1] || {};
     }else if(type === 'object'){
       it = type;
@@ -58,7 +58,7 @@ module.exports.fixOptions = function (arr = [],key,resloveModule) {
     }
     newArr.push(it);
   })
-  return arr;
+  return newArr;
 }
 
 module.exports.queueExec = async function (arr = [],...props) {
@@ -73,7 +73,7 @@ module.exports.queueExec = async function (arr = [],...props) {
   }
 }
 
-module.exports.getEntryPaths = async function (entry) {
+module.exports.getEntryPaths = function (entry) {
   let arr = [];
   Object.keys(entry).forEach((item)=>{
     const paths = entry[item].paths || [];
@@ -85,6 +85,24 @@ module.exports.getEntryPaths = async function (entry) {
   });
   return arr;
 }
+
+module.exports.getChunks = function (entry) {
+  let chunks = {};
+  Object.keys(entry).forEach((item)=>{
+    const paths = entry[item].paths || [];
+    chunks[item] = {
+      isBundle : false,
+      content: '',
+      paths: paths
+    }
+  });
+  return chunks
+}
+
+let id = 0;
+module.exports.getId = function (entry) {
+  return id++
+};
 
 
 

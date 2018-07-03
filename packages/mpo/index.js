@@ -1,11 +1,12 @@
 "use strict";
+
 const Compiler = require("./src/compiler");
 const version = require("./package.json").version;
 const constant = require('./src/constant');
 function getMpoOptions(options, platform ) {
   platform = platform || 'web';
   let opt = {};
-  Object.key(options).forEach((item)=>{
+  Object.keys(options).forEach((item)=>{
     if(!/PConfig$/g.test(item)){
       opt[item] = options[item]
     }
@@ -37,7 +38,7 @@ const mpo = (options = {},cb) => {
     }else if(platform.length ===1){
       platform = platform[0]
     }else{
-      return doM(options = {},cb)
+      return doM(options,cb)
     }
   }
   options = getMpoOptions(options,platform);

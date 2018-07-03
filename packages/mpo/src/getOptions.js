@@ -1,6 +1,7 @@
 const path = require('path');
 const util = require('./util');
 const resolve = require('resolve');
+const cwd = process.cwd();
 
 const fs = require('fs');
 function getPath(str){
@@ -8,7 +9,7 @@ function getPath(str){
   let nStr = null;
   if(/^[\\/]/g.test(str)){
     nStr = path.join(cwd,str);
-    if(!fs.existsSync(nstr)){
+    if(!fs.existsSync(nStr)){
       nStr = null;
     }
   }else if(/^\.[.\\/]+/.test(str)){
@@ -52,16 +53,15 @@ const getOptions = function (options = {}) {
   options.entry = getEntry(entry);
   let plugins = util.fixOptions(options.plugins || [],'plugin',options.resolveLoaderModule || []);
   if(options.isHot){
-    plugins.shift(require('../plugins/hotPlugin.js'))
+    plugins.shift({plugin:require('../plugins/hotPlugin.js')})
   }
   if(options.isWatch){
-    plugins.shift(require('../plugins/watchPlugin.js'))
+    plugins.shift({plugin:require('../plugins/watchPlugin.js')})
   }
   if(options.isServer){
-    plugins.shift(require('../plugins/serverPlugin.js'))
+    plugins.shift({plugin:require('../plugins/serverPlugin.js')})
   }
   options.plugins = plugins;
-
   return options;
 }
 module.exports = getOptions;
