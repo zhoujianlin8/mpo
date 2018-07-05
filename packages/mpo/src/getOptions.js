@@ -2,7 +2,6 @@ const path = require('path');
 const util = require('./util');
 const resolve = require('resolve');
 const cwd = process.cwd();
-
 const fs = require('fs');
 function getPath(str){
   if(fs.existsSync(str)) return str;
@@ -22,9 +21,8 @@ function getPath(str){
   return nStr
 }
 function getEntry(entry) {
-    let entryFiles = [];
     Object.keys(entry).forEach((item)=>{
-      const paths = []
+      let paths = [];
       if(Array.isArray(entry[item])){
         entry[item].forEach((it)=>{
           paths.push(getPath(entry[item][it]));
@@ -32,9 +30,9 @@ function getEntry(entry) {
       }else{
         paths.push(getPath(entry[item]));
       }
-      entry[item].paths = paths
+      entry[item] = paths
     });
-    return entryFiles;
+    return entry;
 }
 const getOptions = function (options = {}) {
   let entry = options.entry;
@@ -53,13 +51,13 @@ const getOptions = function (options = {}) {
   options.entry = getEntry(entry);
   let plugins = util.fixOptions(options.plugins || [],'plugin',options.resolveLoaderModule || []);
   if(options.isHot){
-    plugins.shift({plugin:require('../plugins/hotPlugin.js')})
+    plugins.push({plugin:require('../plugins/hotPlugin.js')})
   }
   if(options.isWatch){
-    plugins.shift({plugin:require('../plugins/watchPlugin.js')})
+    plugins.push({plugin:require('../plugins/watchPlugin.js')})
   }
   if(options.isServer){
-    plugins.shift({plugin:require('../plugins/serverPlugin.js')})
+    plugins.push({plugin:require('../plugins/serverPlugin.js')})
   }
   options.plugins = plugins;
   return options;

@@ -14,26 +14,35 @@ mpo({
   },
   //忽略替代
   externals: {
-    jquery: 'jQuery'
+    jquery: 'jQuery',
+    react: 'React'
   },
   //扩展名称
   extensions: ['.js', '.jsx'],
 
-  platform: ['web','wx'],
+  platform: ['web'],
   isServer: true,
   resolveLoaderModule: [],
   loaders: [
     {
       test: /\.js(x)?/g,
-      use: 'babel-loader',
-    },
-    {
-      test: /\.css/g,
-      use: 'css-loader',
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          presets: [ require("@babel/preset-react") ],
+          /*plugins: [[require("@babel/plugin-transform-runtime"),
+            {
+              "helpers": false,
+              "polyfill": false,
+              "regenerator": true,
+              //"moduleName": moduleName()
+            }
+          ]],*/
+        }
+      }]
     }
   ],
   plugins: ['wrapPlugin','outputPlugin'],
-
   webPConfig: {
 
   },

@@ -1,0 +1,22 @@
+{
+  "name": "mpo-pack",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhoujianlin8/mpo.git"
+  },
+  "keywords": [
+    "taro"
+  ],
+  "author": "zhoujianlin",
+  "license": "MIT",
+  "dependencies": {
+    "combine-source-map": "^0.8.0",
+    "umd": "^3.0.3"
+  }
+}

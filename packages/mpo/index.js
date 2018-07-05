@@ -23,7 +23,7 @@ function doM(options,cb) {
   let platform = options.platform || [];
   function doIt() {
     if(!platform.length) return cb && cb();
-    const item = platform.unshift();
+    const item = platform.shift();
     new Compiler(getMpoOptions(options,item),function () {
       doIt();
     })

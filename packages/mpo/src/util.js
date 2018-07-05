@@ -1,5 +1,6 @@
 const resolve = require('resolve');
 const constant = require('./constant');
+const crypto = require('crypto');
 const cwd = process.cwd();
 function Noop (){}
 function getStrToArr(str,resloveModule = []){
@@ -49,10 +50,16 @@ module.exports.fixOptions = function (arr = [],key,resloveModule) {
       it[key] = strArr[0];
       it['options'] = strArr[1] || {};
     }else if(type === 'object'){
-      it = type;
+      if(typeof item[key] === 'string'){
+        item[key] = getStrToArr(item[key],resloveModule)[0]
+      }
+      it = item;
     }else if(type === 'function'){
       it[key] = item;
     }else if(Array.isArray(item)){
+      if(typeof item[0]  === 'string'){
+        item[0] = getStrToArr(item[0],resloveModule)[0]
+      }
       it[key] = item[0] || Noop;
       it['options'] = item[1] || {};
     }
@@ -76,9 +83,9 @@ module.exports.queueExec = async function (arr = [],...props) {
 module.exports.getEntryPaths = function (entry) {
   let arr = [];
   Object.keys(entry).forEach((item)=>{
-    const paths = entry[item].paths || [];
+    const paths = entry[item] || [];
     paths.forEach((it)=>{
-      if(it && arr.indexOf(it) !== -1){
+      if(it && arr.indexOf(it) === -1){
         arr.push(it)
       }
     })
@@ -86,14 +93,21 @@ module.exports.getEntryPaths = function (entry) {
   return arr;
 }
 
+
+function getHash(){
+  return crypto.createHash('sha256')
+}
+
+
 module.exports.getChunks = function (entry) {
   let chunks = {};
   Object.keys(entry).forEach((item)=>{
-    const paths = entry[item].paths || [];
+    const paths = entry[item] || [];
     chunks[item] = {
       isBundle : false,
       content: '',
-      paths: paths
+      paths: paths,
+      hash: getHash()
     }
   });
   return chunks

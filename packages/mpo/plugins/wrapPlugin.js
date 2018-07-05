@@ -1,11 +1,11 @@
-const pack = require('browser-pack');
+const pack = require('../../mpo-pack/index');
 async function  wrap(item = {},modules,options) {
   const paths = item.paths || [];
   let packs = [];
   paths.forEach((file)=>{
     const obj = Object.assign({},modules[file],{isEntry: true});
     packs.push(obj)
-    if(obj.deps){
+    if(!obj.isContentDeps && obj.deps){
       addDeps(obj.deps)
     }
   });
@@ -17,13 +17,16 @@ async function  wrap(item = {},modules,options) {
       }
     }
   }
+
   //[{id: '1',content: 'xx',deps: {'key': '1'},isEntry: true}]
-  item.content = await pack(packs,options);
+  item.content = await pack({
+    packages: packs
+  });
   packs = null;
 }
 
 
-function fileOutPutPlugin (compiler,options,config) {
+function wrapPlugin (compiler,options,config) {
   if(!options || !Object.keys(options)){
     options = {
 
@@ -44,8 +47,8 @@ function fileOutPutPlugin (compiler,options,config) {
         arr.push(wrap(item,modules,options))
       }
     }
-    await new Promise.all(arr);
+    await Promise.all(arr);
   })
 }
 
-module.exports = fileOutPutPlugin;
+module.exports = wrapPlugin;

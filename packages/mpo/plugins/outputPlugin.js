@@ -12,11 +12,10 @@ function outputPlugin (compiler, options, config) {
     const chunks = compiler.chunks;
     await fs.ensureDir(options.path);
     let arr = [];
-    console.log('chunks',chunks);
     Object.keys(chunks).forEach(function (it) {
       arr.push(async function (key) {
-        const file = path.join(options.path,options.filename.replace('[name]',key))
-        await fs.outputFile(file, chunks[key],'utf-8')
+        const file = path.join(options.path,options.filename.replace('[name]',key).replace('[hash]',chunks[it].hash));
+        await fs.outputFile(file, chunks[key].content,'utf-8');
         console.log(`chunck:${key} output:${file}`)
       }(it))
     })

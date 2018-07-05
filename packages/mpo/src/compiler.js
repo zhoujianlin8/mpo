@@ -9,7 +9,6 @@ class Compiler extends Message {
     const opt = this.options = getOptions(options);
     if(typeof opt === 'string') return cb({error: true, opt});
     this.chunks = Util.getChunks(opt.entry);  //{name: { paths: [], content: '', isCache: false }}
-    console.log('this.chunks',this.chunks)
     // 加载插件
     this._initPlugins(opt.plugins);
     this._init(cb);
@@ -101,7 +100,8 @@ class Compiler extends Message {
       const uses = Util.fixOptions(loader.use,'loader');
       let newUses = [];
       uses.forEach((item)=>{
-        item.loader && newUses.push(item.loader.bind(this,moduleObj,item.options))
+        console.log(item.loader)
+        item.loader && newUses.push(item.loader.bind(this,moduleObj,item.options,this.options))
       });
       await Util.queueExec(newUses)
     }
