@@ -38,13 +38,13 @@ class Message {
     if (listenerItem) {
       const len = listenerItem.length;
       async function exec(index) {
-        if (len < index) return
+        if (len <= index) return
         const item = listenerItem[index];
-        item && await item(...props);
+        await item(...props);
         index++;
         await exec(index);
       }
-      await exec(0);
+      len && await exec(0);
     }
     return this;
   }

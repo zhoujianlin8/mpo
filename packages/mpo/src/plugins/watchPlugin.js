@@ -14,12 +14,12 @@ function watchPlugin(compiler, options, config) {
       return;
     }
     objFile[file] = true;
-    console.log('file',file);
     watcher.add(file)
   });
   let arrWatch = [];
   let isCompiler = false;
   watcher.on('change', (path, status) => {
+    console.log('path change:',path);
     const a = arrWatch.find((item = {}) => {
       return item.path === path && item.status === status
     });

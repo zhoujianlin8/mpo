@@ -8,6 +8,7 @@ const getOptions = function (options = {}) {
   }
   options.entry = util.getEntry(entry);
   let plugins = util.fixOptions(options.plugins || [],'plugin',options.resolveLoaderModule || []);
+
   if(options.isHot){
     plugins.push({plugin:require('./plugins/hotPlugin.js')})
   }
@@ -17,7 +18,15 @@ const getOptions = function (options = {}) {
   if(options.isServer){
     plugins.push({plugin:require('./plugins/serverPlugin.js')})
   }
+  //整理loader
+  let loaders = options.loaders || [];
+  loaders.forEach((item)=>{
+    if(item && item.use){
+      item.use = util.fixOptions(item.use, 'loader')
+    }
+  });
   options.plugins = plugins;
+  options.loaders = loaders;
   return options;
 }
 module.exports = getOptions;

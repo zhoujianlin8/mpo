@@ -4,7 +4,7 @@ if(process.platform === 'web'){}
 export default class App extends Component {
   constructor(props) {
     super(props)
-    asasas
+
   }
 
   componentWillMount() {

@@ -1,6 +1,7 @@
 const Message = require('./message');
 const Util = require('./util');
 const getOptions = require('./getOptions');
+const getFileLoader = require('./getFileLoader');
 const mainParseDeps = require('./mainParseDeps');
 const fs = require('fs');
 const path = require('path');
@@ -114,7 +115,6 @@ class Compiler extends Message {
       }
     }
 
-
     await this._compilerItem(file);
     await this._outputFiles();
     await this.fire('compiler-watch-after', file,items);
@@ -161,25 +161,19 @@ class Compiler extends Message {
   }
 
   async _loaderHand(moduleObj) {
-    const file = moduleObj.file;
-    const loaders = this.options.loaders || []; //[{}]
-    let loader = {};
-    for (let len = loaders.length, i = 0; i < len; i++) {
-      const item = loaders[i] || {};
-      if (item && item.test && item.test.test(file)) {
-        loader = item;
-        break;
-      }
+    const users = getFileLoader(moduleObj.file,this.options.loaders);
+    if(!users) return;
+    const that = this;
+    const len = users.length;
+    async function doIt(index) {
+      if (len <= index) return;
+      const item = users[index] || {};
+
+      item.loader && await item.loader.apply(that,[moduleObj,item.options,that.options]);
+      index++;
+      await doIt(index)
     }
-    if (loader.exclude && loader.exclude.test(file)) return;
-    if (loader.use) {
-      const uses = Util.fixOptions(loader.use, 'loader');
-      let newUses = [];
-      uses.forEach((item) => {
-        item.loader && newUses.push(item.loader.bind(this, moduleObj, item.options, this.options))
-      });
-      await Util.queueExec(newUses)
-    }
+    len && await doIt(0)
   }
 }
 
