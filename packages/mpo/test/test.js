@@ -37,3 +37,4 @@ objHello();
 obj.hi();
 obj.world();
 obj.world2()
+module.exports = obj;

@@ -32,5 +32,5 @@
   //for (var i = 0; i < entry.length; i++) newRequire(entry[i]);
 
   // Override the current require with this new one
-  return newRequire[entry];
+  return newRequire(entry);
 })()

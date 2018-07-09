@@ -2,6 +2,8 @@ const resolve = require('resolve');
 const constant = require('./constant');
 const crypto = require('crypto');
 const cwd = process.cwd();
+const fs = require('fs');
+
 function Noop (){}
 function getStrToArr(str,resloveModule = []){
   str = str.trim();
@@ -11,7 +13,12 @@ function getStrToArr(str,resloveModule = []){
   if(module){
     fn = constant.loaders[module] || constant.plugins[module];
     if(!fn){
-      const file = resolve.sync(module,{paths: resloveModule, basedir:  cwd,isDirectory: false})
+      let file
+      try{
+         file = resolve.sync(module,{paths: resloveModule, basedir: cwd,isDirectory: false})
+      }catch (e) {
+        console.error(e)
+      }
       if(file){
         fn = require(file);
       }else {
@@ -32,7 +39,18 @@ function getStrToArr(str,resloveModule = []){
   return [fn || Noop,options];
 }
 
-
+function getExtName (file) {
+  let ext = 'js';
+  let item = file;
+  item = item.replace(/\.([a-z]+)$/g,function (w,$1) {
+    ext = $1;
+    return ''
+  });
+  return {
+    ext: ext,
+    name: item
+  }
+}
 
 //格式化参数 []
 module.exports.fixOptions = function (arr = [],key,resloveModule) {
@@ -103,21 +121,69 @@ module.exports.getChunks = function (entry) {
   let chunks = {};
   Object.keys(entry).forEach((item)=>{
     const paths = entry[item] || [];
+    const extName = getExtName(item);
     chunks[item] = {
       isBundle : false,
       content: '',
       paths: paths,
+      ext: extName.ext,
+      name: extName.name,
       hash: getHash()
     }
   });
   return chunks
 }
 
-let id = 0;
+let id = 1;
 module.exports.getId = function (entry) {
   return id++
 };
 
+function getPath(str){
+  if(fs.existsSync(str)) return str;
+  let nStr = null;
+  try{
+    nStr = resolve.sync(str,{basedir: cwd,isDirectory: false})
+  }catch (e) {
+    console.error(e)
+  }
+  if(!nStr){
+    console.error(`not found path ${str}`)
+  }
+  return nStr
+}
 
+module.exports.getEntry = function(entry) {
+  Object.keys(entry).forEach((item)=>{
+    let paths = [];
+    if(Array.isArray(entry[item])){
+      entry[item].forEach((it)=>{
+        paths.push(getPath(entry[item][it]));
+      })
+    }else{
+      paths.push(getPath(entry[item]));
+    }
+    entry[item] = paths
+  });
+  return entry || {};
+}
 
+module.exports.getExtName = getExtName;
 
+module.exports.fileInEntryModule = function (file,entry,modules) {
+  let b = false;
+  function find(en) {
+    const entryObj = modules[en] || {};
+    if(entryObj.deps && Object.keys(entryObj.deps).length){
+      for(let key in entryObj.deps){
+        if(entryObj.deps[key] ===file){
+          b = true
+        }else{
+          find(entryObj.deps[key])
+        }
+      }
+    }
+  }
+  find(entry);
+  return b
+}

@@ -2,11 +2,12 @@
  * Created by zhou
  */
 class Message {
-  constructor(){
+  constructor() {
     this._listeners = {}
   }
+
   //_listeners = {};//{'a':[fn, fn,fn],'b':[fn,fn]}
-  on (name, fn) {
+  on(name, fn) {
     const listenerItem = this._listeners[name] || [];
     fn = fn || function () {
     };
@@ -14,14 +15,15 @@ class Message {
     this._listeners[name] = listenerItem;
     return this;
   };
-  off (name, fn) {
+
+  off(name, fn) {
     if (fn === undefined) {
       delete this._listeners[name];
       return this;
     }
     const listenerItem = this._listeners[name] || [];
     const newArr = [];
-    listenerItem.forEach((item)=> {
+    listenerItem.forEach((item) => {
       if (item !== fn) {
         newArr.push(item)
       }
@@ -29,19 +31,23 @@ class Message {
     this._listeners[name] = newArr;
     return this;
   };
+
   // 按顺序执行
   async fire(name, ...props) {
     let listenerItem = this._listeners[name];
     if (listenerItem) {
-      async function exec() {
-        if(!listenerItem.length) return
-        const item = listenerItem.shift();
-        await item(...props)
-        await exec();
+      const len = listenerItem.length;
+      async function exec(index) {
+        if (len < index) return
+        const item = listenerItem[index];
+        item && await item(...props);
+        index++;
+        await exec(index);
       }
-      await exec();
+      await exec(0);
     }
     return this;
   }
 }
+
 module.exports = Message

@@ -1,7 +1,7 @@
 /*
 *  {
-*    alais: {},
-*    externals : [],
+*    alias: {},
+*    extensions : [],
 *    key: '',
 *    file: file
 *  }
@@ -9,20 +9,35 @@
 const path = require('path');
 const fs = require('fs');
 const resolve = require('resolve');
+const cwd = process.cwd();
 let cacheObj = {};
-// 未找到 null , 忽略 false
-module.exports = function (config) {
+module.exports = async function (config) {
   const file = config.file;
-  const key = config.key.trim();
-  const isRe = /^[.\/]+/g.test(key);
+  let key = config.key.trim();
+  const isRe = /^\.[\.\\\/]+/g.test(key);
   const cacheKey = isRe ? file+'_'+key : key;
   //未找到可能添加后已找到
-  if(cacheObj[cacheKey] !== undefined || cacheObj[cacheKey] !== null) return cacheObj[cacheKey];
+  if(cacheObj[cacheKey] !== undefined && cacheObj[cacheKey] !== null) return cacheObj[cacheKey];
   let filePath = null;
+  const alias = config.alias || {};
   if(isRe){
-    filePath = path.resolve(file, key);
+    key = path.resolve(path.dirname(file),key);
   }else{
-
+    if(alias[key]){
+      key = alias[key]
+    }else{
+      key = /^([^\\\/])+[\\\/]/g.replace(key,function (work,$1) {
+        if(alias[$1]){
+          return alias[$1]+'/'
+        }
+        return work
+      })
+    }
+  }
+  try{
+    filePath = resolve.sync(key,{basedir: cwd,extensions: config.extensions,isDirectory: false})
+  }catch (e) {
+    console.error(e)
   }
   cacheObj[cacheKey] = filePath;
   return filePath

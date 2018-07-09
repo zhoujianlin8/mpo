@@ -9,7 +9,7 @@ function wrapItem(row){
     JSON.stringify(row.id),
     ':[',
     'function(require,module,exports){\n',
-    combineSourceMap.removeComments(row.content),
+     row.content && combineSourceMap.removeComments(row.content),
     '\n},',
     '{' + Object.keys(row.deps || {}).sort().map(function (key) {
       return JSON.stringify(key) + ':'
@@ -34,13 +34,14 @@ module.exports = function (opts) {
       enterys.push(item.id)
     }
   });
-  const entery = enterys.length > 1 ? enterys[0] || '': `[${enterys.join(',')}]`;
-  prelude = prelude.replace(/\)\(\)/g,`)({${items.join(',')}},{},${entery})`);
+  const entery = enterys.length > 1 ?`[${enterys.join(',')}]` : enterys[0] || '';
   if(enterys.length > 1){
-    prelude = prelude.replace('// for','for').replace('newRequire[entry]','newRequire')
+    prelude = prelude.replace('//for','for').replace('newRequire(entry)','newRequire')
   }else if(entery.length ===0){
-    prelude = prelude.replace('newRequire[entry]','newRequire')
+    prelude = prelude.replace('newRequire(entry)','newRequire')
   }
+  prelude = prelude.replace(/\)\(\)/g,`)({${items.join(',')}},{},${entery})`);
+
   //amd
   //cmd
   //var

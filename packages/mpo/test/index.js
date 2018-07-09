@@ -2,11 +2,12 @@ const mpo = require('../index');
 const path = require('path');
 mpo({
   entry: {
-    app: '/Users/bbt/work/alipaypage/src/app.js',
+    'app': path.join(__dirname,'/app.js'),
+    'app.css': path.join(__dirname,'/app.less'),
   },
   output: {
-    path:  path.join(__dirname,'./dist'),
-    filename: '[name].js',
+    path:  path.join(__dirname,'/dist'),
+    filename: '[name].[ext]',
   },
   //别名或其他路径
   alias: {
@@ -17,6 +18,7 @@ mpo({
     jquery: 'jQuery',
     react: 'React'
   },
+  isWatch: true,
   //扩展名称
   extensions: ['.js', '.jsx'],
 
@@ -25,7 +27,7 @@ mpo({
   resolveLoaderModule: [],
   loaders: [
     {
-      test: /\.js(x)?/g,
+      test: /\.js(x)?$/g,
       use: [{
         loader: 'babel-loader',
         options: {
@@ -40,6 +42,9 @@ mpo({
           ]],*/
         }
       }]
+    },{
+      test: /\.less$/g,
+      use: 'less-loader'
     }
   ],
   plugins: ['wrapPlugin','outputPlugin'],
@@ -49,4 +54,12 @@ mpo({
   wxPConfig: {
 
   }
+},()=>{
+  setTimeout(()=>{
+    console.log(222)
+  },20000)
 });
+process.on('exit',function () {
+  console.log('end')
+})
+
