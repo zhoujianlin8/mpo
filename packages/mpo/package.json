@@ -29,7 +29,8 @@
     "fs-extra": "^6.0.1",
     "less": "^3.0.4",
     "mime-types": "^2.1.18",
-    "resolve": "^1.8.1"
+    "resolve": "^1.8.1",
+    "serve-index": "^1.9.1"
   },
   "devDependencies": {
     "@babel/preset-es2015": "^7.0.0-beta.51",

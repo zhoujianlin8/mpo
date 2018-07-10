@@ -112,8 +112,8 @@ module.exports.getEntryPaths = function (entry) {
 }
 
 
-function getHash(){
-  return crypto.createHash('sha256')
+function getHash(key){
+  return crypto.createHash('sha256').update(key).digest('hex')
 }
 
 
@@ -128,7 +128,7 @@ module.exports.getChunks = function (entry) {
       paths: paths,
       ext: extName.ext,
       name: extName.name,
-      hash: getHash()
+      hash: getHash(item)
     }
   });
   return chunks

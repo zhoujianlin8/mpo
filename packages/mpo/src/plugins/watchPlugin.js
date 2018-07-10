@@ -1,5 +1,4 @@
 const chokidar = require('chokidar');
-
 function watchPlugin(compiler, options, config) {
   options = Object.assign({
     exclude: /node_module/g,
@@ -38,11 +37,14 @@ function watchPlugin(compiler, options, config) {
       objFile[file] = false;
       watcher.remove(file);
       const moduleObj = compiler.modules[file];
+      const chunks = compiler.chunks;
+
       //是入口文件 删除值
       if (moduleObj.isEntry) {
-        compiler.removeEntryCompiler({})
+        compiler.removeEntryCompiler()
       } else {
         //找到依赖报错 否则不处理
+
       }
       delete compiler.modules[file];
       return watchCompiler();

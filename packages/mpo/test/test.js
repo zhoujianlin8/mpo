@@ -3,9 +3,10 @@ var obj = {
   x: 2,
   say: function(){
     console.log('say=',this.x)
+
   },
   hello: ()=>{
-    console.log('hello=',this.x)
+    console.log('helloqq=',this.x)
   },
   hi: function(){
     var fn = ()=>{
@@ -23,18 +24,20 @@ var obj = {
   },
 
   world2: function(){
-
     setTimeout(()=>{
       console.log('world2',this.x)
     })
   }
 
 }
-obj.say();
+/*obj.say()
 obj.hello();
 var objHello = obj.hello;
 objHello();
 obj.hi();
+
 obj.world();
-obj.world2()
+obj.world2()*/
+
+
 module.exports = obj;

@@ -63,7 +63,6 @@ async function getImports (content,externals = {}){
       const args = node.arguments;
       let value= args[0] && args[0].value ;
       if (callee.name === 'require') {
-
         if(value){
           if(externals[value]){
             external.push(value);

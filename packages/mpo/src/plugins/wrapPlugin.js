@@ -5,7 +5,8 @@ async function wrap(item = {}, modules, options) {
   let packs = [];
   let cacheIn = {};
   paths.forEach((file) => {
-    const obj = Object.assign({}, modules[file], {isEntry: true});
+    const obj = Object.assign({},modules[file], {isEntry: true});
+    obj.deps = Object.assign({},obj.deps || {});
     packs.push(obj)
     cacheIn[obj.id] = true;
     if (!obj.isContentDeps && obj.deps && Object.keys(obj.deps).length) {
@@ -18,12 +19,13 @@ async function wrap(item = {}, modules, options) {
       const item = obj[key];
       const modulesItem = item && modules[item];
       if (modulesItem) {
+        modulesItem.deps = Object.assign({},modulesItem.deps);
         obj[key] = modulesItem.id;
         if (cacheIn[modulesItem.id]) return;
         packs.push(Object.assign({}, modules[item], {isEntry: false}))
         cacheIn[modulesItem.id] = true;
         if (!modulesItem.isContentDeps && modulesItem.deps && Object.keys(modulesItem.deps).length) {
-          addDeps(modulesItem)
+          addDeps(modulesItem.deps)
         }
       }
     }
@@ -47,8 +49,6 @@ function concat(packs) {
   });
   return content.join('');
 }
-
-
 
 function wrapPlugin(compiler, options, config) {
   options = Object.assign({}, options);

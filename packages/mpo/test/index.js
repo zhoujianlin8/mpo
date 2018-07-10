@@ -4,6 +4,7 @@ mpo({
   entry: {
     'app': path.join(__dirname,'/app.js'),
     'app.css': path.join(__dirname,'/app.less'),
+    'index.html': path.join(__dirname,'/index.html'),
   },
   output: {
     path:  path.join(__dirname,'/dist'),
@@ -21,7 +22,7 @@ mpo({
   isWatch: true,
   //扩展名称
   extensions: ['.js', '.jsx'],
-
+  isHot: true,
   platform: ['web'],
   isServer: true,
   resolveLoaderModule: [],
@@ -55,10 +56,9 @@ mpo({
 
   }
 },()=>{
-  setTimeout(()=>{
-    console.log(222)
-  },20000)
+
 });
+
 process.on('exit',function () {
   console.log('end')
 })
