@@ -1,5 +1,5 @@
 const pack = require('../../../mpo-pack/index');
-
+const util = require('../util');
 async function wrap(item = {}, modules, options) {
   const paths = item.paths || [];
   let packs = [];
@@ -49,16 +49,16 @@ function concat(packs) {
   });
   return content.join('');
 }
-
+//{a: {name,ext,content:'xxx',paths: [],isDepContent: true}}
 function wrapPlugin(compiler, options, config) {
-  options = Object.assign({}, options);
+  options = Object.assign(util.getObjBykey(config.output,['library','libraryTarget']),options);
   compiler.on('wrap-bundle', async function () {
     const modules = compiler.modules;
     const chunks = compiler.chunks;
     let arr = [];
     for (let key in chunks) {
       let item = chunks[key] || {};
-      if (item.isBundle !== true) {
+      if (item.isBundle !== true && item.isContentDeps !== true) {
         arr.push(wrap(item, modules, options))
       }
     }

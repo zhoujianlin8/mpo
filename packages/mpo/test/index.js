@@ -9,22 +9,28 @@ mpo({
   output: {
     path:  path.join(__dirname,'/dist'),
     filename: '[name].[ext]',
+    library: 'wm.a',
+    libraryTarget: 'commonjs2'
+  },
+  resolve: {
+    alias: {
+      'react': 'rax'
+    },
+    //忽略替代
+    externals: {
+      jquery: 'jQuery',
+      react: 'React'
+    },
+    extensions: ['.js', '.jsx'],
+    removePaths: /^\.(css|less)$/g,
+    ignoreParses: /^(fs)|(path)|(react)$/g,
   },
   //别名或其他路径
-  alias: {
-    'react': 'rax'
-  },
-  //忽略替代
-  externals: {
-    jquery: 'jQuery',
-    react: 'React'
-  },
   isWatch: true,
   //扩展名称
-  extensions: ['.js', '.jsx'],
-  isHot: true,
+ // isHot: true,
   platform: ['web'],
-  isServer: true,
+ // isServer: true,
   resolveLoaderModule: [],
   loaders: [
     {

@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const mime = require('mime-types');
 const serveIndex = require('serve-index');
-
+const util = require('../util');
 function types(res, url) {
   res.setHeader('Content-Type', mime.contentType(path.basename(url)))
 }
@@ -19,7 +19,7 @@ function serverPlugin(compiler, options, config) {
     serverHand: () => {
     },
     heartbeat: 2000
-  }, config, options);
+  }, util.getObjBykey(config,['isHot','hotPath','port']), options);
   const index = serveIndex(options.cwd);
   const eventStream = createEventStream(options.heartbeat);
 

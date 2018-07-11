@@ -70,14 +70,15 @@ class Compiler extends Message {
       content: content,
       isContentDeps: false,
       deps: {},
+      asyncDeps: {},
       file: file
     };
     await this.fire('compiler-item-before', moduleObj);
     await this._loaderHand(moduleObj);
     //extensions 判断依据
     const extname = path.extname(file)
-    if (extname === '.js' || (this.options.extensions.indexOf(extname) !== -1 && extname !== '.json' && extname !== '.node')) {
-      await mainParseDeps(moduleObj, {}, this.options);
+    if (extname === '.js' || (this.options.resolve.extensions.indexOf(extname) !== -1 && extname !== '.json' && extname !== '.node')) {
+      await mainParseDeps(moduleObj, this.options.resolve, this.options);
     }
     await this.fire('compiler-item-output', moduleObj);
     moduleObj.id = id;
@@ -162,13 +163,15 @@ class Compiler extends Message {
 
   async _loaderHand(moduleObj) {
     const users = getFileLoader(moduleObj.file,this.options.loaders);
+    await this.doLoaderUse(users)
+  }
+  async doLoaderUse(users,moduleObj){
     if(!users) return;
     const that = this;
     const len = users.length;
     async function doIt(index) {
       if (len <= index) return;
       const item = users[index] || {};
-
       item.loader && await item.loader.apply(that,[moduleObj,item.options,that.options]);
       index++;
       await doIt(index)

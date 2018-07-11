@@ -1,2 +1,2 @@
-var a = require('./test');
-console.log('555',a.hello())
+const a = require.ensure('./test')
+//var a = require('./test');

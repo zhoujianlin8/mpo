@@ -3,11 +3,11 @@ const generator = require('@babel/generator').default;
 const {parseAsync,traverse,types,template} = require('@babel/core');
 const getFilePath = require('./getFilePath');
 function replacePlatform(content,platform){
-  return content.replace('process.platform',`'${platform}'`)
+  return content.replace('process.env.platform','process.platform').replace('process.platform',`'${platform}'`)
 }
 
 function replaceNodeEnv (content){
-  return content.replace('process.NODE_ENV',`'${process.env.NODE_ENV || "production"}'`)
+  return content.replace('process.env.NODE_ENV','process.NODE_ENV').replace('process.NODE_ENV',`'${process.env.NODE_ENV || "production"}'`)
 }
 
 //todo 不支持* as的语法
@@ -27,33 +27,41 @@ function getString(node,value) {
       }
     });
     //str = 'const '+(ImportDefaultSpecifier?  ImportDefaultSpecifier +' = ': '')+(arrSpecifier.length ?`{ ${arrSpecifier.join(' , ')} } = `:'')+str
-    //str = `var ${arrSpecifier.join(' , ')};`;
-    //str =  template('var a = react')();
-    //str = types.stringLiteral(str)
+     str = template.ast`var ${arrSpecifier.join(' , ')}`
   }
   return str
 }
-async function getImports (content,externals = {}){
+
+async function getImports (content,externals = {},ignorePares,removeDepPath){
   let ast = await parseAsync(content);
   let imports = [];
   let external = [];
   let dImports = [];
+  function handImport(value,arr,astPath){
+    if(ignorePares && ignorePares.test(value)){}else{
+      arr.push(value)
+    }
+    if(removeDepPath && removeDepPath.test(value)){
+      astPath.remove();
+      return true;
+    }
+  }
   traverse(ast,{
     ImportDeclaration (astPath) {
       const node = astPath.node
       const source = node.source
       let value = source.value
+      // import 先统一转为直接 require 目前import 并不可用
       if(value){
         if(externals[value]){
           external.push(value);
-          //替换值
-          // import a,{} from 'xx';
-          //import 'xx';
-          //const c={a} = obj;
-         // astPath.insertAfter('var a = s;')
-          //astPath.replaceWithSourceString(getString(node,externals[value]));
+          astPath.replaceWith(getString(node,externals[value]));
         }else{
-          imports.push(value)
+          //todo  import 转 require   //export default, module.exports 太复杂用户自己做转换
+          if(!handImport(value,imports,astPath)){
+            //astPath
+
+          }
         }
       }
     },
@@ -69,12 +77,19 @@ async function getImports (content,externals = {}){
             //替换值
             astPath.replaceWithSourceString(externals[value]);
           }else{
-            imports.push(value)
+            handImport(value,imports,astPath)
           }
         }
       }else if(callee.name === 'import'){
         if(value){
-          dImports.push(value)
+          // import 转 require
+          if(!handImport(value,dImports,astPath)){
+            astPath.replaceWith(template.ast`require.ensure (${value})`);
+          }
+        }
+      }else if(callee.type === 'MemberExpression' && callee.object.name === 'require' && callee.property.name === 'ensure'){
+        if(value){
+          handImport(value,dImports,astPath)
         }
       }
     },
@@ -83,7 +98,7 @@ async function getImports (content,externals = {}){
     ast:ast,
     code: external.length? generator(ast).code || '' : content,
     imports: imports,
-    dImports: [],
+    dImports: dImports,
     externals: external
   }
 }
@@ -92,22 +107,29 @@ module.exports = async function loaderMain (item,options,config) {
   item.content = replaceNodeEnv(replacePlatform(item.content,config.platform));
   //不再浪费时间
   if(item.isContentDeps === true) return;
-  let obj = await getImports(item.content,config.externals || {});
-  let imports = obj.imports || [];
-  let deps = {};
-  let arr = [];
-  imports.forEach((k)=>{
-    arr.push(async function (key) {
-      deps[key] = await getFilePath({
-        file: item.file,
-        key: key,
-        extensions: config.extensions,
-        alias: config.alias || {},
-      })
-    }(k))
-  });
-  await Promise.all(arr);
+  let obj = await getImports(item.content,options.externals || {},options.ignorePares,options.removePaths);
+  async function getObj(imports = []) {
+    let deps = {};
+    let arr = [];
+    imports.forEach((k)=>{
+      arr.push(async function (key) {
+        deps[key] = await getFilePath({
+          file: item.file,
+          key: key,
+          extensions: options.extensions,
+          alias: options.alias || {},
+        })
+      }(k))
+    });
+    await Promise.all(arr);
+    return deps
+  }
   item.content = obj.code;
-  item.deps = deps;
+  const asyncDeps = await getObj(obj.dImports);
+  const deps = await getObj(obj.imports);
+  //异步依赖也是依赖处理
+  item.deps = Object.assign(deps,asyncDeps);
+  //是否分离实现由输出wrapPlugin决定 给出依赖关系数据即可
+  item.asyncDeps = asyncDeps;
   obj = null;
 };

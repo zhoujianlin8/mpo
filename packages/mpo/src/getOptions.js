@@ -3,14 +3,19 @@ const util = require('./util');
 const getOptions = function (options = {}) {
   let entry = options.entry;
 
-  if(!options.extensions || !options.extensions.length){
+/*  if(!options.extensions || !options.extensions.length){
     options.extensions = ['.js'];
+  }*/
+  let resolve = options.resolve || {};
+  if(!resolve.extensions || !resolve.extensions.length){
+    resolve.extensions = ['.js'];
   }
+  options.resolve = resolve;
   options.entry = util.getEntry(entry);
   let plugins = util.fixOptions(options.plugins || [],'plugin',options.resolveLoaderModule || []);
 
   if(options.isHot){
-    plugins.push({plugin:require('./plugins/hotPlugin.js')})
+    plugins.pop({plugin:require('./plugins/hotPlugin.js')})
   }
   if(options.isWatch){
     plugins.push({plugin:require('./plugins/watchPlugin.js')})

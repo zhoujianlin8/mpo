@@ -1,3 +1,4 @@
+const util = require('../util');
 function getTemplate(item, options) {
   //http chunk 协议进行前后端通信
   let str = `(function(){
@@ -189,7 +190,7 @@ function hotPlugin(compiler, options, config) {
     hotPath: "/__hmr",
     heartbeat: 2000,
     reload: true
-  }, config, options);
+  }, util.getObjBykey(config,'hotPath'), options);
   //给 entry 的js
   compiler.on('optimize', function () {
     const chunks = compiler.chunks;
