@@ -109,6 +109,7 @@ function serverPlugin(compiler, options, config) {
       return;
     }
     const chunk = getChunk(url, chunks);
+    console.log('chunk',chunk)
     if (options.isChunks && chunk) {
       types(res, url);
       res.content = chunk.content;

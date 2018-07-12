@@ -1,4 +1,4 @@
+var a = require('./test');
 require('./app.less');
-
-//const a = require.ensure('./test');
-//var a = require('./test');
+console.log(a.hello())
+console.log(21221)
