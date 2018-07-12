@@ -41,10 +41,17 @@ module.exports = function (opts) {
     prelude = prelude.replace('newRequire(entry)','newRequire')
   }
   prelude = prelude.replace(/\)\(\)/g,`)({${items.join(',')}},{},${entery})`);
+  const libraryTarget = opts.libraryTarget;
+  const library = opts.library;
 
-  //amd
-  //cmd
-  //var
-  //umd
-  return opts.name ? umd(opts.name,prelude,opts):prelude;
+  if(libraryTarget === 'commonjs2'){
+    return `module.exports = ${prelude}`
+  }
+  if(library && libraryTarget === 'amd'){
+    return `define('${library}',function(require,module,exports){module.exports = ${prelude})`
+  }
+  if(libraryTarget === 'commonjs'){
+    opts.commonJS = true;
+  }
+  return library ? umd(library,prelude,opts):prelude;
 };

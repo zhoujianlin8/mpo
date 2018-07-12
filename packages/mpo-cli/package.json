@@ -1,29 +1,28 @@
 {
-  "name": "@tarojs/cli",
-  "version": "0.0.59",
-  "description": "cli tool for taro",
+  "name": "mpo-cli",
+  "version": "0.0.1",
+  "description": "cli tool for mpo",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NervJS/taro.git"
+    "url": "git+https://github.com/zhoujianlin8/mpo.git"
   },
   "bin": {
-    "taro": "bin/taro"
+    "mpo": "bin/mpo"
   },
   "keywords": [
-    "taro",
-    "weapp"
+    "mpo",
+    "mpo-cli"
   ],
   "engines": {
     "node": ">=7.6.0"
   },
-  "author": "O2Team",
+  "author": "zhoujianlin8@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "@tarojs/transformer-wx": "0.0.59",
     "autoprefixer": "^8.4.1",
     "babel-core": "^6.26.3",
     "babel-generator": "^6.26.1",

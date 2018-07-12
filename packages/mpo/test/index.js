@@ -1,16 +1,17 @@
 const mpo = require('../index');
 const path = require('path');
+const extractTextPlugin = mpo.plugins.extractTextPlugin;
 mpo({
   entry: {
     'app': path.join(__dirname,'/app.js'),
-    'app.css': path.join(__dirname,'/app.less'),
+   //'app.css': path.join(__dirname,'/app.less'),
     'index.html': path.join(__dirname,'/index.html'),
   },
   output: {
     path:  path.join(__dirname,'/dist'),
     filename: '[name].[ext]',
-    library: 'wm.a',
-    libraryTarget: 'commonjs2'
+    /*library: 'wm.a',
+    libraryTarget: 'commonjs2'*/
   },
   resolve: {
     alias: {
@@ -22,46 +23,47 @@ mpo({
       react: 'React'
     },
     extensions: ['.js', '.jsx'],
-    removePaths: /^\.(css|less)$/g,
+    //removePaths: /^\.(css|less)$/g,
     ignoreParses: /^(fs)|(path)|(react)$/g,
   },
   //别名或其他路径
   isWatch: true,
+  isServer: true,
   //扩展名称
- // isHot: true,
+  isHot: true,
   platform: ['web'],
- // isServer: true,
+  //isServer: true,
   resolveLoaderModule: [],
   loaders: [
     {
       test: /\.js(x)?$/g,
-      use: [{
+    /*  use: [{
         loader: 'babel-loader',
         options: {
           presets: [ require("@babel/preset-react") ],
-          /*plugins: [[require("@babel/plugin-transform-runtime"),
+          plugins: [[require("@babel/plugin-transform-runtime"),
             {
               "helpers": false,
               "polyfill": false,
               "regenerator": true,
               //"moduleName": moduleName()
             }
-          ]],*/
+          ]],
         }
-      }]
+      }]*/
     },{
       test: /\.less$/g,
-      use: 'less-loader'
+      use: extractTextPlugin.extract('less-loader!css-loader')
     }
   ],
-  plugins: ['wrapPlugin','outputPlugin'],
+  plugins: ['wrapPlugin','outputPlugin',[extractTextPlugin,{chunks: ['app']}]],
   webPConfig: {
 
   },
   wxPConfig: {
 
   }
-},()=>{
+},(com)=>{
 
 });
 

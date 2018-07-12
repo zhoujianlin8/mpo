@@ -48,15 +48,6 @@ const mpo = (options = {},cb) => {
 exports = module.exports = mpo;
 exports.version = version;
 exports.Compiler = Compiler;
-const exportPlugins = (obj, mappings) => {
-  for (const name of Object.keys(mappings)) {
-    Object.defineProperty(obj, name, {
-      configurable: false,
-      enumerable: true,
-      get: mappings[name]
-    });
-  }
-};
+exports.loaders = constant.loaders;
+exports.plugins = constant.plugins;
 
-exportPlugins(exports.loaders = {},constant.loaders);
-exportPlugins(exports.plugins = {},constant.plugins);

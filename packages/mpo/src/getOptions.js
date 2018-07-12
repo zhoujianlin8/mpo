@@ -15,7 +15,7 @@ const getOptions = function (options = {}) {
   let plugins = util.fixOptions(options.plugins || [],'plugin',options.resolveLoaderModule || []);
 
   if(options.isHot){
-    plugins.pop({plugin:require('./plugins/hotPlugin.js')})
+    plugins.unshift({plugin:require('./plugins/hotPlugin.js')})
   }
   if(options.isWatch){
     plugins.push({plugin:require('./plugins/watchPlugin.js')})

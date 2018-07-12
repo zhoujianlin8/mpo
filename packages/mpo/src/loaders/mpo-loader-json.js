@@ -1,4 +1,8 @@
-module.exports = function jsonLoader (item,config) {
-  if(config.isWrapItem === false) return;
-  item.content = `module.exports = 'JSON.stringify('${item.content}')`
+module.exports = function jsonLoader (item,options,config) {
+  options = Object.assign({
+    isToJs: true
+  },options);
+  if(options.isToJs === true){
+    item.content = `module.exports = 'JSON.stringify('${item.content}')`
+  }
 }

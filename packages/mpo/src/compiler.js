@@ -163,7 +163,7 @@ class Compiler extends Message {
 
   async _loaderHand(moduleObj) {
     const users = getFileLoader(moduleObj.file,this.options.loaders);
-    await this.doLoaderUse(users)
+    await this.doLoaderUse(users,moduleObj)
   }
   async doLoaderUse(users,moduleObj){
     if(!users) return;

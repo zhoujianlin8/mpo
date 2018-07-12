@@ -1,2 +1,4 @@
-const a = require.ensure('./test')
+require('./app.less');
+
+//const a = require.ensure('./test');
 //var a = require('./test');

@@ -12,4 +12,6 @@ module.exports.plugins = {
   'watchPlugin': require('./plugins/watchPlugin'),
   'serverPlugin': require('./plugins/serverPlugin'),
   'wrapPlugin': require('./plugins/wrapPlugin'),
+  'uglifyjsPlugin': require('./plugins/uglifyjsPlugin'),
+  'extractTextPlugin': require('./plugins/extractTextPlugin'),
 }

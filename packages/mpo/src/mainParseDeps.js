@@ -32,8 +32,12 @@ function getString(node,value) {
   return str
 }
 
-async function getImports (content,externals = {},ignorePares,removeDepPath){
-  let ast = await parseAsync(content);
+async function getImports (content,reslove){
+  const {externals = {},ignorePares,removePaths} = reslove || {};
+  let ast = await parseAsync(content,{
+    plugins: [require('@babel/plugin-syntax-dynamic-import')]
+  });
+
   let imports = [];
   let external = [];
   let dImports = [];
@@ -41,25 +45,23 @@ async function getImports (content,externals = {},ignorePares,removeDepPath){
     if(ignorePares && ignorePares.test(value)){}else{
       arr.push(value)
     }
-    if(removeDepPath && removeDepPath.test(value)){
+    if(removePaths && removePaths.test(value)){
       astPath.remove();
       return true;
     }
   }
+  let isEs6 = false;
   traverse(ast,{
     ImportDeclaration (astPath) {
       const node = astPath.node
       const source = node.source
       let value = source.value
-      // import 先统一转为直接 require 目前import 并不可用
       if(value){
         if(externals[value]){
           external.push(value);
           astPath.replaceWith(getString(node,externals[value]));
         }else{
-          //todo  import 转 require   //export default, module.exports 太复杂用户自己做转换
           if(!handImport(value,imports,astPath)){
-            //astPath
 
           }
         }
@@ -80,11 +82,10 @@ async function getImports (content,externals = {},ignorePares,removeDepPath){
             handImport(value,imports,astPath)
           }
         }
-      }else if(callee.name === 'import'){
+      }else if(callee.type === 'Import'){
         if(value){
-          // import 转 require
           if(!handImport(value,dImports,astPath)){
-            astPath.replaceWith(template.ast`require.ensure (${value})`);
+            astPath.replaceWith(template.ast`require.ensure ('${value}')`);
           }
         }
       }else if(callee.type === 'MemberExpression' && callee.object.name === 'require' && callee.property.name === 'ensure'){
@@ -94,9 +95,14 @@ async function getImports (content,externals = {},ignorePares,removeDepPath){
       }
     },
   });
+  //todo 不处理输出格式 用户自行处理 只进行依赖分析
+  if(isEs6 ){
+
+  }
+
   return {
     ast:ast,
-    code: external.length? generator(ast).code || '' : content,
+    code:  generator(ast).code || '',
     imports: imports,
     dImports: dImports,
     externals: external
@@ -107,7 +113,7 @@ module.exports = async function loaderMain (item,options,config) {
   item.content = replaceNodeEnv(replacePlatform(item.content,config.platform));
   //不再浪费时间
   if(item.isContentDeps === true) return;
-  let obj = await getImports(item.content,options.externals || {},options.ignorePares,options.removePaths);
+  let obj = await getImports(item.content,options);
   async function getObj(imports = []) {
     let deps = {};
     let arr = [];
@@ -129,6 +135,7 @@ module.exports = async function loaderMain (item,options,config) {
   const deps = await getObj(obj.imports);
   //异步依赖也是依赖处理
   item.deps = Object.assign(deps,asyncDeps);
+
   //是否分离实现由输出wrapPlugin决定 给出依赖关系数据即可
   item.asyncDeps = asyncDeps;
   obj = null;

@@ -69,6 +69,12 @@ module.exports.fixOptions = function (arr = [], key, resloveModule) {
       const strArr = getStrToArr(item, resloveModule);
       it[key] = strArr[0];
       it['options'] = strArr[1] || {};
+    }else if (Array.isArray(item)) {
+      if (typeof item[0] === 'string') {
+        item[0] = getStrToArr(item[0], resloveModule)[0]
+      }
+      it[key] = item[0] || Noop;
+      it['options'] = item[1] || {};
     } else if (type === 'object') {
       if (typeof item[key] === 'string') {
         item[key] = getStrToArr(item[key], resloveModule)[0]
@@ -76,12 +82,6 @@ module.exports.fixOptions = function (arr = [], key, resloveModule) {
       it = item;
     } else if (type === 'function') {
       it[key] = item;
-    } else if (Array.isArray(item)) {
-      if (typeof item[0] === 'string') {
-        item[0] = getStrToArr(item[0], resloveModule)[0]
-      }
-      it[key] = item[0] || Noop;
-      it['options'] = item[1] || {};
     }
     newArr.push(it);
   })
