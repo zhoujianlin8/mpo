@@ -3,9 +3,9 @@ const Util = require('./util');
 const getOptions = require('./getOptions');
 const getFileLoader = require('./getFileLoader');
 const mainParseDeps = require('./mainParseDeps');
+const getFilePath = require('./getFilePath');
 const fs = require('fs');
 const path = require('path');
-
 class Compiler extends Message {
   constructor(options = {}, cb) {
     super();
@@ -178,6 +178,7 @@ class Compiler extends Message {
     }
     len && await doIt(0)
   }
+  getFilePath = getFilePath
 }
 
 module.exports = Compiler;
